@@ -1,15 +1,15 @@
-import { useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Searchbar } from 'react-native-paper';
 import { 
 	StyleSheet, 
 	View, 
 	ScrollView,
-  TouchableOpacity,
+    TouchableOpacity,
 	KeyboardAvoidingView ,
 	TouchableWithoutFeedback, 
 	Keyboard
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 import PatientBar from "../atoms/patientBar";
 import { PatientInfoContext } from '../contexts/contexts';
@@ -17,9 +17,50 @@ import { Colors } from "../utils/colors";
 
 const HomePage = ({navigation}) => {
   const { currentPatientInfo } = useContext(PatientInfoContext);
+  
+  const patientsNonAvailableView = <View style={styles.emptyBox} >
+  	<MaterialCommunityIcons 
+  		name="flask-empty-minus-outline" 
+		  size={105} 
+	 	 color={Colors.darkTransparent} 
+ 	 />
+  </View>;
+  
+  const patientsAvailableView = <ScrollView 
+  	style={styles.list} 
+	  contentContainerStyle={{alignItems: "center"}}
+  >
+  	{
+       	currentPatientInfo.map((bar, key) => {
+                return (
+                  <PatientBar 
+                    key={bar.id}
+                    name={bar.name}
+                    id={bar.id}
+                    date={bar.date}
+                    clickHandler={() => patientBarClickHandler(key)}
+                  />
+                )
+            })
+       }
+  </ScrollView>;
+  
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const onChangeSearch = query => setSearchQuery(query);
+
+  
+  const [ view, setView ] = useState(patientsNonAvailableView);
+  
+  useEffect(() => {
+  	if(!currentPatientInfo.length) {
+  		return
+	  };
+  	setView(patientsAvailableView)
+  }, [currentPatientInfo]);
 
   const patientBarClickHandler = (id) => navigation.navigate('Patient Info', {
-    index: id - 3000,
+    index: id,
   });
   const addNewPatient = () => navigation.navigate('Add New Patient');
 
@@ -29,30 +70,19 @@ const HomePage = ({navigation}) => {
 			  onPress={Keyboard.dismiss}
 		  >
 		  	<View style={styles.search}>
-              	<Searchbar />
+              	<Searchbar
+     				 placeholder="Search"
+  				    onChangeText={onChangeSearch}
+ 				     value={searchQuery}
+  			    />
               </View>
           </TouchableWithoutFeedback>
-          <ScrollView 
-		  	style={styles.list} 
-		  	contentContainerStyle={{alignItems: "center"}}
-		  >
-          	{
-              currentPatientInfo.map((bar) => {
-                return (
-                  <PatientBar 
-                    key={bar.id}
-                    name={bar.name}
-                    id={bar.id}
-                    date={bar.name}
-                    clickHandler={patientBarClickHandler}
-                  />
-                )
-              })
-            }
-          </ScrollView>
+          
+          	{view}
+         
           <View style={styles.footer}>
               <TouchableOpacity onPress={addNewPatient}>
-                    <Ionicons name="person-add" size={30} color={Colors.highlight} />
+                    <Ionicons name="person-add" size={25} color={Colors.highlight} />
               </TouchableOpacity>
           </View>
       </KeyboardAvoidingView>
@@ -75,6 +105,12 @@ const styles = StyleSheet.create({
     width: "90%",
     justifyContent: "center",
     alignItems: "center",
+  },
+  emptyBox: {
+  	flex: 0.76,
+  	alignItems: "center",
+  	justifyContent: "center",
+  	marginBottom: 40
   },
   list: {
     flex: 0.76,

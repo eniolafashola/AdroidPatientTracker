@@ -5,32 +5,9 @@ import InfoBox from "../atoms/infoBox";
 
 import { Colors } from "../utils/colors";
 
-const PatientHistoryPage = () => {
-    const infos = [
-        {
-            date: "9-Jun-2020",
-            doctor: "Dr Fagbuagun",
-            diagnosis: "Tuberculosis",
-            prescriptions: "Aspirin",
-            bill: "$500"
-        },
-        {
-            date: "9-Jun-2013",
-            doctor: "Dr Fagbuagun",
-            diagnosis: "Tuberculosis",
-            prescriptions: "Aspirin",
-            bill: "$500"
-        },
-        {
-            date: "9-Jun-2015",
-            doctor: "Dr Fagbuagun",
-            diagnosis: "Tuberculosis",
-            prescriptions: "Aspirin",
-            bill: "$500"
-        },
-    ];
-
-    const infoBoxes = infos.map((info) => {
+const PatientHistoryPage = ({goToEdit, history = []}) => {
+	
+    const infoBoxes = history.map((info) => {
         return (
             <InfoBox
                 key={info.date}
@@ -39,28 +16,15 @@ const PatientHistoryPage = () => {
                 diagnosis={info.diagnosis}
                 prescriptions={info.prescriptions}
                 bill={info.bill}
+                edit={goToEdit}
              />
          )
     });
 
     return (
-        <>
-            <ScrollView style={styles.container}>
-                {infoBoxes}
-            </ScrollView>
-            <View style={styles.buttonBox}>
-                    <Button 
-                        title="Add" 
-                        color={Colors.highlight}
-                    //  onPress={select}
-                    />
-                    <Button 
-                        title="Delete" 
-                        color={Colors.ordinary}
-                    //  onPress={cancel}
-                    />
-            </View>
-        </>
+    	<ScrollView style={styles.container}>
+        	{infoBoxes}
+        </ScrollView>
     )
 };
 

@@ -1,11 +1,62 @@
+import { useState, useContext , useEffect} from "react";
 import { View, Text, Button, StyleSheet, StatusBar } from "react-native";
 
 import DoctorSelectBox from "../atoms/doctorSelectBox";
 
+
+import { PopUpContext, PatientInfoContext } from '../contexts/contexts';
+
 import { Colors } from "../utils/colors";
 
-const PopUpPage = ({select, cancel}) => {
+const PopUpPage = ({submitInfo, goToPageInfo}) => {
+	const months = [
+		 "Jan", "Feb", "Mar", "Apr", 
+		"May", "Jun", "Jul", "Aug",
+		"Sep", "Oct", "Nov", "Dec"
+	];
 	
+	const { 
+		currentPatientInfo,
+		setCurrentPatientInfo, 
+		currentPatientHistory, 
+		setCurrentPatientHistory
+	 } = useContext(PatientInfoContext);
+	const { currentPopUp, setCurrentPopUp } = useContext(PopUpContext);
+	
+	const [doc, setDoc] = useState(null); 
+	
+	const cancel = () => {
+		setCurrentPopUp(null);
+		/**setCurrentPatientInfo(
+			currentPatientInfo.slice(1)
+		)*/
+	};
+	
+	const select = () => {
+		 setCurrentPatientHistory([
+			  [{
+            			date: `${
+								new Date().getDate()
+							} ${months[new Date().getMonth()]} ${
+							new Date().getFullYear()
+						}`,
+            			doctor: doc,
+            		/**	diagnosis: "Tuberculosis",
+            			prescriptions: "Aspirin",
+            			bill: "$500"*/
+       		},
+       	], ...currentPatientHistory
+       ]);
+       submitInfo();
+       setCurrentPopUp(null); 
+       goToPageInfo();
+	};
+	
+	const getDoc = (d) => {
+		setDoc(d);
+	};
+	
+	//const select = () => getDoc("eni")
     return (
       <View style={styles.container}>
         <View style={styles.pickBox}>
@@ -15,7 +66,9 @@ const PopUpPage = ({select, cancel}) => {
             >Select Doctor</Text>
           </View>
           <View style={styles.selectSection}>
-          <DoctorSelectBox />
+          <DoctorSelectBox 
+			getDoc={getDoc}
+		  />
           </View>
           <View style={styles.buttonBox}>
             <Button 

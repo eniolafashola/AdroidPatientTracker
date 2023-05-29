@@ -24,12 +24,20 @@ import React, { createContext, useState, useEffect } from 'react';
  export const PatientInfoContext = createContext({ 
     currentPatientInfo: null, 
     setCurrentPatientInfo: () => null, 
+    currentPatientHistory: [],
+    setCurrentPatientHistory: () => null
  }); 
   
  export const PatientInfoProvider = ({children}) =>{ 
     const [ currentPatientInfo, setCurrentPatientInfo ] = useState([]); 
+    const [ currentPatientHistory, setCurrentPatientHistory ] = useState([]); 
   
-    const value = { currentPatientInfo, setCurrentPatientInfo }; 
+    const value = { 
+		currentPatientInfo, 
+		setCurrentPatientInfo,
+		currentPatientHistory,
+		setCurrentPatientHistory
+	}; 
   
     useEffect(() => { 
   

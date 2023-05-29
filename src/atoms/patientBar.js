@@ -27,9 +27,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     padding: 8,
     marginBottom: 8,
-    backgroundColor: Colors.highlight,
+    backgroundColor: Colors.transparent,
     //alignItems: 'center',
     justifyContent: 'center',
+    borderColor: Colors.highlight,
+    borderWidth: 1
   },
   identityBox: {
       flex: 1,
@@ -39,7 +41,7 @@ const styles = StyleSheet.create({
   },
   name: {
     //width: "100%",
-    color: Colors.white,
+    color: Colors.highlight,
     fontSize: 20,
     //fontFamily: "monospace"
   },

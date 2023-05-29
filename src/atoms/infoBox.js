@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 
 import { Colors } from "../utils/colors";
 
@@ -7,11 +7,12 @@ const InfoBox = ({
     doctor, 
     diagnosis, 
     prescriptions, 
-    bill
+    bill,
+    edit
     }) => {
     
     return (
-        <View style={styles.container}>
+        <TouchableOpacity style={styles.container} onPress={edit}>
             <Text 
                 style={styles.date}
             >{date}</Text>
@@ -27,7 +28,7 @@ const InfoBox = ({
             <Text 
                 style={styles.entities}
             >Bill : {bill}</Text>
-        </View>
+        </TouchableOpacity>
     );
 };
 

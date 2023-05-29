@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { View, Text, Button, StyleSheet, StatusBar } from "react-native";
 import { RadioButton } from "react-native-paper";
 
-const DoctorSelectBox = () => {
+const DoctorSelectBox = ({getDoc}) => {
+	
 	const radios = [
 			"Dr Mogaji Isaac",
 			"Dr Segun Fagunwa",
@@ -12,14 +13,15 @@ const DoctorSelectBox = () => {
 	
 	const [checked, setChecked] = useState(radios[0]);
 	
+	useEffect (() => getDoc(checked), [checked]);
+	
 	return (
 		<View style={styles.container}>
 			{
 				radios.map((radio, index) => {
 					return ( 
-						<View style={styles.radioBox}>
+						<View style={styles.radioBox} key={index}>
         					<RadioButton
-								key={index}
         						value={radio}
         						status={ checked === radio ? 'checked' : 'unchecked' }
         						onPress={() => setChecked(radio)}
