@@ -17,6 +17,21 @@ import { Colors } from "../utils/colors";
 
 const HomePage = ({navigation}) => {
   const { currentPatientInfo } = useContext(PatientInfoContext);
+  const [ searched, setSearched ] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const onChangeSearch = query => setSearchQuery(query);
+  
+  useEffect(() => {
+  	if(searchQuery == " ") {
+	  	return  setView(patientsNonAvailableView)
+  		//	: setView(patientsAvailableView);
+	  }
+  	setSearched(currentPatientInfo.filter(
+	  	(c) => c.name.toLowerCase()
+			.includes(searchQuery.toLowerCase())
+	  ));
+  },[searchQuery]);
   
   const patientsNonAvailableView = <View style={styles.emptyBox} >
   	<MaterialCommunityIcons 
@@ -31,38 +46,68 @@ const HomePage = ({navigation}) => {
 	  contentContainerStyle={{alignItems: "center"}}
   >
   	{
-       	currentPatientInfo.map((bar, key) => {
-                return (
-                  <PatientBar 
-                    key={bar.id}
-                    name={bar.name}
-                    id={bar.id}
-                    date={bar.date}
-                    clickHandler={() => patientBarClickHandler(key)}
-                  />
-                )
-            })
-       }
+       		currentPatientInfo.map((bar, index) => {
+                	return (
+                	  <PatientBar 
+              	      key={bar.id}
+            	        name={bar.name}
+          	          id={bar.id}
+           	         date={bar.date}
+         	           clickHandler={() => patientBarClickHandler(index)}
+               	   />
+              	  )
+           	 })
+         }  
   </ScrollView>;
   
-  const [searchQuery, setSearchQuery] = useState('');
-
-  const onChangeSearch = query => setSearchQuery(query);
-
+  const patientsSearchedView = <ScrollView 
+  	style={styles.list} 
+	  contentContainerStyle={{alignItems: "center"}}
+  >
+  	{
+       		searched.map((bar) => {
+                	return (
+                	  <PatientBar 
+              	      key={bar.id}
+            	        name={bar.name}
+          	          id={bar.id}
+           	         date={bar.date}
+         	           clickHandler={() => 
+							patientBarClickHandler(currentPatientInfo.indexOf(bar))
+						}
+               	   />
+              	  )
+           	 })
+         }  
+  </ScrollView>;
   
   const [ view, setView ] = useState(patientsNonAvailableView);
   
   useEffect(() => {
+  	if(!searched.length) {
+  		return  setView(patientsNonAvailableView)
+  		//	: setView(patientsAvailableView);
+	  }
+  	setView(patientsSearchedView)
+  }, [searched]);
+  
+  useEffect(() => {
   	if(!currentPatientInfo.length) {
-  		return
+  		return setView(patientsNonAvailableView)
 	  };
   	setView(patientsAvailableView)
-  }, [currentPatientInfo]);
+  }, [currentPatientInfo[0]]);
 
-  const patientBarClickHandler = (id) => navigation.navigate('Patient Info', {
-    index: id,
-  });
-  const addNewPatient = () => navigation.navigate('Add New Patient');
+  const patientBarClickHandler = (index) => {
+  	//alert(id + ' : t')
+  	navigation.navigate('Patient Info', {
+     	 index,
+	  });
+  }
+  const addNewPatient = () => {
+  	navigation.navigate('Add New Patient');
+  	setSearchQuery("");
+  }
 
   return (
       <KeyboardAvoidingView behavior="height" style={styles.container}>
@@ -71,6 +116,8 @@ const HomePage = ({navigation}) => {
 		  >
 		  	<View style={styles.search}>
               	<Searchbar
+				  	iconColor={Colors.highlight}
+					  style={styles.searchBar}
      				 placeholder="Search"
   				    onChangeText={onChangeSearch}
  				     value={searchQuery}
@@ -105,6 +152,9 @@ const styles = StyleSheet.create({
     width: "90%",
     justifyContent: "center",
     alignItems: "center",
+  },
+  searchBar: {
+  	backgroundColor: Colors.darkTransparent
   },
   emptyBox: {
   	flex: 0.76,

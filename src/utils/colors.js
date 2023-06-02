@@ -3,5 +3,5 @@ export const Colors = {
     white: "white",
     ordinary: "#EFDECD",
     transparent: "rgba(255, 255, 255, .01)",
-    darkTransparent: "rgba(0, 0, 0, .05)",
+    darkTransparent: "rgba(150, 75, 0, .05)",
 };

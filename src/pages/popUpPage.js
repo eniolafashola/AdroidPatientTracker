@@ -8,7 +8,7 @@ import { PopUpContext, PatientInfoContext } from '../contexts/contexts';
 
 import { Colors } from "../utils/colors";
 
-const PopUpPage = ({submitInfo, goToPageInfo}) => {
+const PopUpPage = ({submitInfo, goToPageInfo, index, shiftIndex}) => {
 	const months = [
 		 "Jan", "Feb", "Mar", "Apr", 
 		"May", "Jun", "Jul", "Aug",
@@ -33,8 +33,9 @@ const PopUpPage = ({submitInfo, goToPageInfo}) => {
 	};
 	
 	const select = () => {
-		 setCurrentPatientHistory([
-			  [{
+		if(submitInfo) {
+		 	setCurrentPatientHistory([
+			 	 [{
             			date: `${
 								new Date().getDate()
 							} ${months[new Date().getMonth()]} ${
@@ -44,12 +45,30 @@ const PopUpPage = ({submitInfo, goToPageInfo}) => {
             		/**	diagnosis: "Tuberculosis",
             			prescriptions: "Aspirin",
             			bill: "$500"*/
-       		},
-       	], ...currentPatientHistory
-       ]);
-       submitInfo();
-       setCurrentPopUp(null); 
-       goToPageInfo();
+       			}
+       		 ], ...currentPatientHistory
+    	   ]);
+    		submitInfo();
+    		setCurrentPopUp(null); 
+    		goToPageInfo();
+       }else  {
+       	setCurrentPatientHistory([
+			 	 [{
+            			date: `${
+								new Date().getDate()
+							} ${months[new Date().getMonth()]} ${
+							new Date().getFullYear()
+						}`,
+            			doctor: doc,
+            		/**	diagnosis: "Tuberculosis",
+            			prescriptions: "Aspirin",
+            			bill: "$500"*/
+       			}, ...currentPatientHistory[index]
+       		 ], ...currentPatientHistory
+   	    ]);
+   		shiftIndex();
+           setCurrentPopUp(null); 
+       }
 	};
 	
 	const getDoc = (d) => {

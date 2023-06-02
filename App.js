@@ -7,6 +7,7 @@ import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
 import HomePage from './src/pages/homePage';
 import PatientInfoPage from './src/pages/patientInfoPage';
 import AddPatient from "./src/pages/addPatient";
+import EditHistoryInfo from "./src/pages/editHistoryInfo";
 
 import { PaperProvider } from 'react-native-paper';
 import { Colors } from "./src/utils/colors";
@@ -36,6 +37,10 @@ const App = () => {
                   component={PatientInfoPage}
                 />
                 <Stack.Screen 
+                  name="Edit Patient Info" 
+                  component={EditHistoryInfo}
+                />
+                <Stack.Screen 
                   name="Add New Patient" 
                   component={AddPatient} 
                 />
@@ -49,3 +54,11 @@ const App = () => {
 }
 
 export default App;
+
+//REMOVED FROM APP.JSON FILE
+/** "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/10c5be74-a279-4d4b-b26c-e52a1c6e6a2a"
+    }*/

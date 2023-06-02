@@ -1,15 +1,15 @@
 import { View, Text, Button, StyleSheet } from "react-native";
 import { Colors } from "../utils/colors";
 
-const PatientAboutPage = ({id, sex, dob, address, contact}) => {
+const PatientAboutPage = ({about}) => {
 
     return (
     	<View style={styles.container}>
-        	<Text style={styles.entities}>Patient Id: {id}</Text>
-            <Text style={styles.entities}>Sex: {sex}</Text>
-            <Text style={styles.entities}>Date Of Birth: {dob}</Text>
-            <Text style={styles.entities}>Address: {address}</Text>
-            <Text style={styles.entities}>Contact: {contact}</Text>
+        	<Text style={styles.entities}>Patient Id: {about.id}</Text>
+            <Text style={styles.entities}>Sex: {about.sex}</Text>
+            <Text style={styles.entities}>Date Of Birth: {about.dob}</Text>
+            <Text style={styles.entities}>Address: {about.address}</Text>
+            <Text style={styles.entities}>Contact: {about.contact}</Text>
      	</View>
     )
 };

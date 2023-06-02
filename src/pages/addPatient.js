@@ -47,6 +47,7 @@ const AddPatient = ({navigation}) => {
 		setCurrentPatientInfo(
 			[{
 				id: 3000 + currentPatientInfo.length,
+				index: currentPatientInfo.length,
 				sex: checked,
 				name,
 				dob,
@@ -92,15 +93,19 @@ const AddPatient = ({navigation}) => {
 				/>
 				<View style={styles.radioBox}>
 					<RadioButton
-							value="male"
-							status={ checked === 'male' ? 'checked' : 'unchecked' }
-							onPress={() => setChecked('male')}
+						color={Colors.highlight}
+						unchecked color={Colors.highlight}
+						value="male"
+						status={ checked === 'male' ? 'checked' : 'unchecked' }
+						onPress={() => setChecked('male')}
 					/>
 					<Text>Male</Text>
 					<RadioButton
-							value="female"
-							status={ checked === 'female' ? 'checked' : 'unchecked' }
-							onPress={() => setChecked('female')}
+						color={Colors.highlight}
+						unchecked color={Colors.highlight}
+						value="female"
+						status={ checked === 'female' ? 'checked' : 'unchecked' }
+						onPress={() => setChecked('female')}
 					/>
 					<Text>Female</Text>
 				</View>
@@ -150,6 +155,7 @@ const styles = StyleSheet.create({
   	margin: 40,
   },
   input: {
+  	backgroundColor: Colors.darkTransparent,
   	width: "85%",
   	marginBottom: 25,
   },

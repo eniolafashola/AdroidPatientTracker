@@ -3,35 +3,74 @@ import { useState, useEffect, useContext } from "react";
 import PatientAboutPage from "../pre-pages/patientAboutPage";
 import PatientHistoryPage from "../pre-pages/patientHistoryPage";
 
-import { PatientInfoContext } from "../contexts/contexts";
+import PopUpPage from "./popUpPage";
+
+import { PopUpContext, PatientInfoContext } from "../contexts/contexts";
 import { View, TouchableOpacity, Text, StyleSheet } from "react-native";
 import { Button, Menu, Divider } from 'react-native-paper';
 import { MaterialIcons } from '@expo/vector-icons';
 
 import { Colors } from "../utils/colors";
 
-const PatientInfoPage = ({route, navigation}) => {
+const PatientInfoPage = ({route, navigation}, a=[], b=[]) => {
+	const [ toShift, setToShift ] = useState(false);
+	const [ toReset, setToReset ] = useState(false);
     const { 
 		currentPatientInfo, 
+		setCurrentPatientInfo,
 		currentPatientHistory, 
 		setCurrentPatientHistory
 	} = useContext(PatientInfoContext);
+    const { currentPopUp, setCurrentPopUp } = useContext(PopUpContext);
     
-    const { index } = route.params;
-    const { 
-		id, name, dob, sex, address, contact 
-	} = currentPatientInfo[
-		JSON.stringify(index)
-	];
-	
+    const { index , edited } = route.params;
+    
+    const about = currentPatientInfo[JSON.stringify(index)];
 	const history = currentPatientHistory[JSON.stringify(index)];
 	
-	const goToEdit = () => navigation.navigate('Add New Patient');
+	const goToEdit = (key) => {
+		//console.log("Ed: ",edited, history)
+		navigation.navigate('Edit Patient Info', {
+     	 index,
+     	 key,
+     	 lastEdited: !edited ? false : true
+		});
+	}
 	
     const [view, setView] = useState(<PatientHistoryPage 
-		history={history} 
-		goToEdit={goToEdit}
+			history={history} 
+			goToEdit={goToEdit}
 	/>);
+	//let a = []
+	useEffect (() => {
+		a = currentPatientInfo;
+		b = currentPatientHistory;
+	},[history.length])
+	
+	useEffect (() => {
+		if(!toShift) {
+			return
+		}
+		a.unshift(a.splice(index, 1)[0]);
+		b.unshift(b.splice(index, 1)[0]);
+		//console.log("2a: ",index , " ", about.name)
+		setCurrentPatientInfo(a);
+		setCurrentPatientHistory(b);
+		setToShift(false);
+		setToReset(true);
+	}, [toShift])
+	
+	useEffect (() => {
+		console.log(111)
+		if(!toReset) {
+			return
+		}
+		setView(<PatientHistoryPage 
+			history={history} 
+			goToEdit={goToEdit}
+		/>);
+		setToReset(false);
+	}, [toReset]);
 
     const [visible, setVisible] = useState(false);
     
@@ -39,24 +78,41 @@ const PatientInfoPage = ({route, navigation}) => {
     const closeMenu = () => setVisible(false);
 
     const goToAbout = () => {
-        setView(<PatientAboutPage 
-			id= {id}
-			sex= {sex}
-			dob= {dob}
-			address= {address}
-			contact= {contact}
-		/>);
+        setView(<PatientAboutPage about={about}/>);
         setVisible(false);
     };
 
     const goToHistory = () => {
-        setView(<PatientHistoryPage history={history} />);
+        setView(<PatientHistoryPage 
+			history={history} 
+			goToEdit={goToEdit}
+		/>);
         setVisible(false);
     };
+    
+    useEffect(() => {
+  /**  	if(!edited) {
+    		return
+		}*/
+		goToHistory();
+    //	console.log("edi: ", edited, history)
+    },[edited]);
+    
+    const assignDoc = () => {
+		setCurrentPopUp(
+			<PopUpPage 
+				index={index}
+				shiftIndex={() => setToShift(true)}
+				//submitInfo={submitInfo} 
+				//goToPageInfo={goToPageInfo}
+			/>
+		);
+	};
 
     useEffect(() => {
+    //	console.log("3a: ",index , " ", about.name, "more: ", //currentPatientInfo)
         navigation.setOptions({ 
-            title: name,
+            title: about.name,
             headerRight: () => ( 
                 <Menu
                 visible={visible}
@@ -78,13 +134,14 @@ const PatientInfoPage = ({route, navigation}) => {
 		<>
 			{view}
 			<View style={styles.buttonBox}>
-                    <TouchableOpacity style={styles.btn} onPress={() => {}}>
+                    <TouchableOpacity style={styles.btn} onPress={assignDoc}>
                     	<Text>Add</Text>
               	  </TouchableOpacity>
 					<TouchableOpacity style={styles.btn} onPress={null}>
                     	<Text>Delete</Text>
              	   </TouchableOpacity>
             </View>
+            {currentPopUp}
 		</>
 	);
 };
