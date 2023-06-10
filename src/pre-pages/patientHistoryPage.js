@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { View, ScrollView, Button, StyleSheet } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 
@@ -7,10 +6,6 @@ import InfoBox from "../atoms/infoBox";
 import { Colors } from "../utils/colors";
 
 const PatientHistoryPage = ({goToEdit, history = []}) => {
-	useEffect(() => {
-		//alert(333)
-	}, [history.length])
-	
     const infoBoxes = history.map((info, key) => {
         return (
             <InfoBox

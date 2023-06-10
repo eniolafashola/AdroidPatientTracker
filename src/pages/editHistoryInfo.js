@@ -1,15 +1,13 @@
 import { useState, useEffect, useContext } from "react";
 import { 
 	KeyboardAvoidingView, 
-	View, 
 	Text, 
 	Alert,
 	TouchableOpacity,
 	StyleSheet,
 	ScrollView,
-	BackHandler
 } from "react-native";
-import { TextInput, Button, RadioButton } from "react-native-paper";
+import { TextInput } from "react-native-paper";
 
 import { PopUpContext, PatientInfoContext } from '../contexts/contexts';
 
@@ -20,16 +18,14 @@ const EditHistoryInfo = ({navigation, route}) => {
 	const { 
 		currentPatientInfo, 
 		setCurrentPatientInfo,
-		currentPatientHistory, 
-		setCurrentPatientHistory
 	} = useContext(PatientInfoContext);
 	
 	const { index, key, lastEdited } = route.params;
 	
 	const about = currentPatientInfo[JSON.stringify(index)];
-	const history = currentPatientHistory[JSON.stringify(index)];
+	const history = currentPatientInfo[JSON.stringify(index)].history;
 	
-	const [diagnosis, setDiagnosis] = useState(history[JSON.stringify(key)].diagnosis);
+	const [diagnosis, setDiagnosis] = useState(history[key].diagnosis);
 	const [prescriptions, setPrescription] = useState(history[JSON.stringify(key)].prescriptions);
 	const [bill, setBill] = useState(history[JSON.stringify(key)].bill); 
 	
@@ -41,78 +37,80 @@ const EditHistoryInfo = ({navigation, route}) => {
 	
 	const onSubmit = () => {
 		if(!diagnosis || !prescriptions || !bill) {
-			return Alert.alert("", "Cannot submit empty informations");
+			return Alert.alert("", "Cannot submit empty fields");
 		}
-		console.log(about.name, "1: ", currentPatientHistory)
-		setCurrentPatientHistory(
-			currentPatientHistory.map(
-				(c,d) => c = d == JSON.stringify(index)
-				  ? currentPatientHistory[index].map(
-						(a, b) => a = b == JSON.stringify(key) ? {
-							date: history[JSON.stringify(key)].date,
-							doctor: history[JSON.stringify(key)].doctor,
+		console.log('info: ', JSON.stringify(index), key)
+		setCurrentPatientInfo(
+			currentPatientInfo.map((patient, i) => patient = i === index
+				? {
+					...currentPatientInfo[index],
+					history: history.map((details, j) => details = j === key
+						? {
+							...currentPatientInfo[index].history[key],
 							diagnosis,
 							prescriptions,
-							bill: bill
-						} : a
+							bill
+						} 
+						
+						: details
 					)
-			    : c
-		   )
+				}
+				
+				: patient
+			)
 		);
 		
 		navigation.navigate('Patient Info', {
      	 index,
      	 edited: !lastEdited ? true : false
 	    });
-		//history.diagnosis= "tttt"
-		//console.log("his: ", history)
 	}
 	
 	useEffect (() => {
-		console.log(about.name, "2: ", currentPatientHistory)
-	},[currentPatientHistory])
+		console.log('aaa: ', currentPatientInfo)
+	},[currentPatientInfo])
 	
 	return (
-	<>
-		<ScrollView style={styles.scrollView}>
-			<KeyboardAvoidingView 
-				behavior="height"
-				style={styles.container}
-			>
-				<Text style={styles.id}>Patient Id: {about.id}</Text>
-				<Text>Diagnosis:</Text>
-				<TextInput
-					//label="Name"
-					multiline={true}
-					value={diagnosis}
-					//placeholder="Place Of God"
-					style={styles.input}
-					onChangeText={diagnosis => setDiagnosis(diagnosis)}
-				/>
-				<Text>Prescriptions:</Text>
-				<TextInput
-					//label="Date Of Birth"
-					multiline={true}
-					value={prescriptions}
-					//placeholder="29-Jul-2000"
-					style={styles.input}
-					onChangeText={prescriptions => setPrescription(prescriptions)}
-				/>
-				<Text>Bill:</Text>
-				<TextInput
-					//label="Address"
-					value={bill}
-					//placeholder="21 Akinmurele strt, Akure"
-					style={styles.input}
-					onChangeText={bill => setBill(bill)}
-				/>
-				<TouchableOpacity style={styles.button} onPress={onSubmit}>
-                	<Text style={styles.btnT}>Submit</Text>
-                </TouchableOpacity>
-			</KeyboardAvoidingView>
-		</ScrollView>
-		{currentPopUp}
-	</>
+		<>
+			<ScrollView style={styles.scrollView}>
+				<KeyboardAvoidingView 
+					behavior="height"
+					style={styles.container}
+				>
+					<Text style={styles.id}>Patient Id: {about.id}</Text>
+					<Text>Diagnosis:</Text>
+					<TextInput
+						//label="Name"
+						multiline={true}
+						value={diagnosis}
+						//placeholder="Place Of God"
+						style={styles.input}
+						onChangeText={diagnosis => setDiagnosis(diagnosis)}
+					/>
+					<Text>Prescriptions:</Text>
+					<TextInput
+						//label="Date Of Birth"
+						multiline={true}
+						value={prescriptions}
+						//placeholder="29-Jul-2000"
+						style={styles.input}
+						onChangeText={prescriptions => setPrescription(prescriptions)}
+					/>
+					<Text>Bill:</Text>
+					<TextInput
+						//label="Address"
+						value={bill}
+						//placeholder="21 Akinmurele strt, Akure"
+						style={styles.input}
+						onChangeText={bill => setBill(bill)}
+					/>
+					<TouchableOpacity style={styles.button} onPress={onSubmit}>
+						<Text style={styles.btnT}>Submit</Text>
+					</TouchableOpacity>
+				</KeyboardAvoidingView>
+			</ScrollView>
+			{currentPopUp}
+		</>
 	);
 }
 
@@ -132,7 +130,7 @@ const styles = StyleSheet.create({
   	margin: 40,
   },
   input: {
-  	backgroundColor: Colors.darkTransparent,
+  	backgroundColor: Colors.ordinary,
   	width: "85%",
   	marginBottom: 25,
   },

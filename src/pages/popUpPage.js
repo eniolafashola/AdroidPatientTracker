@@ -1,5 +1,5 @@
-import { useState, useContext , useEffect} from "react";
-import { View, Text, Button, StyleSheet, StatusBar } from "react-native";
+import { useState, useContext } from "react";
+import { View, Text, Button, StyleSheet } from "react-native";
 
 import DoctorSelectBox from "../atoms/doctorSelectBox";
 
@@ -8,102 +8,100 @@ import { PopUpContext, PatientInfoContext } from '../contexts/contexts';
 
 import { Colors } from "../utils/colors";
 
-const PopUpPage = ({submitInfo, goToPageInfo, index, shiftIndex}) => {
+const PopUpPage = ({ goToPageInfo, index }) => {
 	const months = [
 		 "Jan", "Feb", "Mar", "Apr", 
 		"May", "Jun", "Jul", "Aug",
 		"Sep", "Oct", "Nov", "Dec"
 	];
 	
-	const { 
-		currentPatientInfo,
-		setCurrentPatientInfo, 
-		currentPatientHistory, 
-		setCurrentPatientHistory
-	 } = useContext(PatientInfoContext);
-	const { currentPopUp, setCurrentPopUp } = useContext(PopUpContext);
+	const { currentPatientInfo,  setCurrentPatientInfo } = useContext(PatientInfoContext);
+	const { setCurrentPopUp } = useContext(PopUpContext);
 	
-	const [doc, setDoc] = useState(null); 
+	const [doctor, setDoctor] = useState(null); 
 	
 	const cancel = () => {
 		setCurrentPopUp(null);
-		/**setCurrentPatientInfo(
-			currentPatientInfo.slice(1)
-		)*/
 	};
 	
 	const select = () => {
-		if(submitInfo) {
-		 	setCurrentPatientHistory([
-			 	 [{
-            			date: `${
-								new Date().getDate()
-							} ${months[new Date().getMonth()]} ${
-							new Date().getFullYear()
-						}`,
-            			doctor: doc,
-            		/**	diagnosis: "Tuberculosis",
-            			prescriptions: "Aspirin",
-            			bill: "$500"*/
-       			}
-       		 ], ...currentPatientHistory
-    	   ]);
-    		submitInfo();
-    		setCurrentPopUp(null); 
-    		goToPageInfo();
-       }else  {
-       	setCurrentPatientHistory([
-			 	 [{
-            			date: `${
-								new Date().getDate()
-							} ${months[new Date().getMonth()]} ${
-							new Date().getFullYear()
-						}`,
-            			doctor: doc,
-            		/**	diagnosis: "Tuberculosis",
-            			prescriptions: "Aspirin",
-            			bill: "$500"*/
-       			}, ...currentPatientHistory[index]
-       		 ], ...currentPatientHistory
-   	    ]);
-   		shiftIndex();
-           setCurrentPopUp(null); 
-       }
+    console.log('in: ', index)
+		if(isNaN(index)) {
+    //  console.log(111, "before Doc: ", currentPatientInfo)
+      setCurrentPatientInfo(
+        currentPatientInfo.map((patient, i) => patient = i === 0 
+          ? {
+              ...currentPatientInfo[0],
+                history: [{
+                  date: `${new Date().getDate()} ${months[new Date().getMonth()]} ${new Date().getFullYear()}`,
+                  doctor,
+                  diagnosis: "",
+                  prescriptions: "",
+                  bill: "",
+                }]
+            }
+            
+          : patient
+        )
+      )
+      
+      setCurrentPopUp(null); 
+      goToPageInfo();
+    }else {
+    //  console.log(333, "before Doc: ", currentPatientInfo)
+      setCurrentPatientInfo(
+        currentPatientInfo.map((patient, i) => patient = i === index 
+          ? {
+              ...currentPatientInfo[index],
+                history: [{
+                  date: `${new Date().getDate()} ${months[new Date().getMonth()]} ${new Date().getFullYear()}`,
+                  doctor,
+                  diagnosis: "",
+                  prescriptions: "",
+                  bill: "",
+                }, ...currentPatientInfo[index].history
+              ]
+            }
+            
+          : patient
+        )
+      )
+      setCurrentPopUp(null); 
+    }
 	};
 	
 	const getDoc = (d) => {
-		setDoc(d);
+		setDoctor(d);
 	};
 	
-	//const select = () => getDoc("eni")
-    return (
-      <View style={styles.container}>
-        <View style={styles.pickBox}>
-          <View style={styles.titleBox}>
-            <Text 
-                style={styles.title}
-            >Select Doctor</Text>
-          </View>
-          <View style={styles.selectSection}>
-          <DoctorSelectBox 
-			getDoc={getDoc}
-		  />
-          </View>
-          <View style={styles.buttonBox}>
-            <Button 
-              title="Select" 
-              color={Colors.highlight}
-              onPress={select}
-            />
-            <Button 
-              title="Cancel" 
-              color={Colors.ordinary}
-              onPress={cancel}
-            />
-          </View>
+  return (
+    <View style={styles.container}>
+      <View style={styles.pickBox}>
+        <View style={styles.titleBox}>
+          <Text 
+              style={styles.title}
+          >Select Doctor</Text>
+        </View>
+        <View style={styles.selectSection}>
+        <DoctorSelectBox 
+    getDoc={getDoc}
+    />
+        </View>
+        <View style={styles.buttonBox}>
+          <Button 
+            title="Select" 
+            color={Colors.highlight}
+            onPress={select}
+          />
+          <Button 
+            title="Cancel" 
+            color={Colors.ordinary}
+            onPress={cancel}
+          />
         </View>
       </View>
-    );
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({

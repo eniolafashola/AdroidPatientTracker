@@ -17,16 +17,26 @@ import { PopUpContext, PatientInfoContext } from '../contexts/contexts';
 
 import { Colors } from  "../utils/colors";
 
-const AddPatient = ({navigation}) => {
+const EditAbout = ({navigation, route}) => {
 	const { currentPopUp, setCurrentPopUp } = useContext(PopUpContext);
 	const { currentPatientInfo, setCurrentPatientInfo } = useContext(PatientInfoContext);
 	
-	const [name, setName] = useState("");
-	const [dob, setDob] = useState("");
-	const [address, setAddress] = useState("");
-	const [contact, setContact] = useState(""); 
+	const { index } = route.params;
 	
-	const [checked, setChecked] = useState('male');
+	const patient = currentPatientInfo[JSON.stringify(index)];
+	
+	useEffect(() => {
+		navigation.setOptions({ 
+            title: patient.name,
+        })
+	}, []);
+	
+	const [name, setName] = useState(patient.name);
+	const [dob, setDob] = useState(patient.dob);
+	const [address, setAddress] = useState(patient.address);
+	const [contact, setContact] = useState(patient.contact); 
+	
+	const [checked, setChecked] = useState(patient.sex);
 	
 	const backAction = () => setCurrentPopUp(null);
 	
@@ -43,31 +53,30 @@ const AddPatient = ({navigation}) => {
 		"Sep", "Oct", "Nov", "Dec"
 	]
 		
-	const assignDoc = () => {
+	const submit = () => {
 		if(!name) {
 			return Alert.alert("", "Enter At Least Patient Name To Create A Profile");
 		}
+		
 		setCurrentPatientInfo(
-			[{
-				id: 3000 + currentPatientInfo.length,
-				index: currentPatientInfo.length,
-				sex: checked,
-				name,
-				dob,
-				address,
-				contact,
-				date: `${new Date().getDate()} ${months[new Date().getMonth()]} ${new Date().getFullYear()}`,
-				history: []
-			  }, ...currentPatientInfo
-		  ]
+			currentPatientInfo.map((patient, i) => patient = i === index
+				? {
+					...currentPatientInfo[index],
+					name,
+					dob,
+					address,
+					contact,
+					sex: checked
+				}
+				
+				: patient
+			)
 		);
+		
+		navigation.navigate('Patient Info', {
+			index
+		});
 
-		setCurrentPopUp(
-			<PopUpPage 
-				// submitInfo={submitInfo} 
-				goToPageInfo={goToPageInfo}
-			/>
-		);
 	};
 	
 	return (
@@ -77,7 +86,7 @@ const AddPatient = ({navigation}) => {
 				behavior="height"
 				style={styles.container}
 			>
-				<Text style={styles.id}>Patient Id: {3000 + currentPatientInfo.length}</Text>
+				<Text style={styles.id}>Patient Id: {patient.id}</Text>
 				<TextInput
 					label="Name"
 					textColor={Colors.black}
@@ -128,12 +137,11 @@ const AddPatient = ({navigation}) => {
 					style={styles.input}
 					onChangeText={contact => setContact(contact)}
 				/>
-				<TouchableOpacity style={styles.button} onPress={assignDoc}>
+				<TouchableOpacity style={styles.button} onPress={submit}>
                 	<Text style={styles.btnT}>Submit</Text>
                 </TouchableOpacity>
 			</KeyboardAvoidingView>
 		</ScrollView>
-		{currentPopUp}
 	</>
 	);
 };
@@ -178,4 +186,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default AddPatient;
+export default EditAbout;

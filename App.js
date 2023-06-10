@@ -8,6 +8,7 @@ import HomePage from './src/pages/homePage';
 import PatientInfoPage from './src/pages/patientInfoPage';
 import AddPatient from "./src/pages/addPatient";
 import EditHistoryInfo from "./src/pages/editHistoryInfo";
+import EditAbout from "./src/pages/editAbout";
 
 import { PaperProvider } from 'react-native-paper';
 import { Colors } from "./src/utils/colors";
@@ -43,6 +44,10 @@ const App = () => {
                 <Stack.Screen 
                   name="Add New Patient" 
                   component={AddPatient} 
+                />
+                <Stack.Screen 
+                  name="Edit About" 
+                  component={EditAbout} 
                 />
               </Stack.Navigator>
             </PaperProvider>

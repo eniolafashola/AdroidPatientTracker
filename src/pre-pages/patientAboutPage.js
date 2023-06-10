@@ -1,16 +1,18 @@
-import { View, Text, Button, StyleSheet } from "react-native";
+import { View, Text, Button, TouchableOpacity, StyleSheet } from "react-native";
 import { Colors } from "../utils/colors";
 
-const PatientAboutPage = ({about}) => {
-
+const PatientAboutPage = ({patient, goToEditAbout}) => {
     return (
-    	<View style={styles.container}>
-        	<Text style={styles.entities}>Patient Id: {about.id}</Text>
-            <Text style={styles.entities}>Sex: {about.sex}</Text>
-            <Text style={styles.entities}>Date Of Birth: {about.dob}</Text>
-            <Text style={styles.entities}>Address: {about.address}</Text>
-            <Text style={styles.entities}>Contact: {about.contact}</Text>
-     	</View>
+    	<TouchableOpacity 
+			style={styles.container} 
+			onPress={goToEditAbout}
+		>
+        	<Text style={styles.entities}>Patient Id: {patient.id}</Text>
+            <Text style={styles.entities}>Sex: {patient.sex}</Text>
+            <Text style={styles.entities}>Date Of Birth: {patient.dob}</Text>
+            <Text style={styles.entities}>Address: {patient.address}</Text>
+            <Text style={styles.entities}>Contact: {patient.contact}</Text>
+     	</TouchableOpacity>
     )
 };
 
