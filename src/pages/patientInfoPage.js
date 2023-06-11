@@ -20,15 +20,14 @@ import { Colors } from "../utils/colors";
 
 const PatientInfoPage = ({route, navigation}, a=[], b=[]) => {
 	const [ toShift, setToShift ] = useState(false);
-    const { 
+  const { 
 		currentPatientInfo, 
 		setCurrentPatientInfo,
 	} = useContext(PatientInfoContext);
-    const { currentPopUp, setCurrentPopUp } = useContext(PopUpContext);
-    
-    const { index , edited } = route.params;
-    console.log(111)
-    const patient = currentPatientInfo[JSON.stringify(index)];
+  const { currentPopUp, setCurrentPopUp } = useContext(PopUpContext);
+  
+  const { index , edited } = route.params;
+  const patient = currentPatientInfo[JSON.stringify(index)];
 	const history = currentPatientInfo[JSON.stringify(index)]  === undefined
 		? [] : currentPatientInfo[JSON.stringify(index)].history;
 	
@@ -111,7 +110,6 @@ const PatientInfoPage = ({route, navigation}, a=[], b=[]) => {
     
     const deleteUser = () => {
     	navigation.navigate('Home');
-    console.log('i: ', index)
     	if(index === currentPatientInfo.length - 1) {
     		return alert("Cannot delete this Patient at the moment");
 		}
@@ -119,7 +117,6 @@ const PatientInfoPage = ({route, navigation}, a=[], b=[]) => {
     	setCurrentPatientInfo(
     		currentPatientInfo.filter((patient, i) => i !== index)
     	);
-    console.log('fieat: ', currentPatientInfo)
     }
     
     const toDeleteUser = () => {
@@ -128,24 +125,9 @@ const PatientInfoPage = ({route, navigation}, a=[], b=[]) => {
        	 onPress: deleteUser,
        	 style: 'cancel',
  	     },
-    	  {text: 'Cancel', onPress: () => console.log('Cancel Pressed')},
+    	  {text: 'Cancel', onPress: () =>{}},
   	 ]);
     }
-
-/**  const createThreeButtonAlert = () =>
-    Alert.alert('Alert Title', 'My Alert Msg', [
-      {
-        text: 'Ask me later',
-        onPress: () => console.log('Ask me later pressed'),
-      },
-      {
-        text: 'Cancel',
-        onPress: () => console.log('Cancel Pressed'),
-        style: 'cancel',
-      },
-      {text: 'OK', onPress: () => console.log('OK Pressed')},
-    ]);
-  */
 
     //RENDER
     return (

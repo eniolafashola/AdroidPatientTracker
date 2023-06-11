@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState, useEffect, useContext } from 'react';
 import { Searchbar } from 'react-native-paper';
 import { 
@@ -16,9 +17,23 @@ import { PatientInfoContext } from '../contexts/contexts';
 import { Colors } from "../utils/colors";
 
 const HomePage = ({navigation}) => {
-  const { currentPatientInfo } = useContext(PatientInfoContext);
+  const { currentPatientInfo, setCurrentPatientInfo } = useContext(PatientInfoContext);
   const [ searched, setSearched ] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
+
+  const getData = async () => {
+    try {
+      const jsonValue = await AsyncStorage.getItem('@storage_Key')
+      return jsonValue != null ? setCurrentPatientInfo(JSON.parse(jsonValue)) : null;
+      // jsonValue != null ? JSON.parse(jsonValue) : []
+    } catch(e) {
+      // error reading value
+    }
+  }
+
+  useEffect(() => {
+    getData()
+  },[])
 
   const [ view, setView ] = useState(patientsNonAvailableView);
 

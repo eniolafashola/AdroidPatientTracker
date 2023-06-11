@@ -21,13 +21,14 @@ const PopUpPage = ({ goToPageInfo, index }) => {
 	const [doctor, setDoctor] = useState(null); 
 	
 	const cancel = () => {
+    // setCurrentPatientInfo(
+    //   currentPatientInfo.filter((patient, i) => i !== 0)
+    // )
 		setCurrentPopUp(null);
 	};
 	
 	const select = () => {
-    console.log('in: ', index)
 		if(isNaN(index)) {
-    //  console.log(111, "before Doc: ", currentPatientInfo)
       setCurrentPatientInfo(
         currentPatientInfo.map((patient, i) => patient = i === 0 
           ? {
@@ -48,7 +49,6 @@ const PopUpPage = ({ goToPageInfo, index }) => {
       setCurrentPopUp(null); 
       goToPageInfo();
     }else {
-    //  console.log(333, "before Doc: ", currentPatientInfo)
       setCurrentPatientInfo(
         currentPatientInfo.map((patient, i) => patient = i === index 
           ? {

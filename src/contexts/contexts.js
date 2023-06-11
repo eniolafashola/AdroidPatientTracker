@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, { createContext, useState, useEffect } from 'react';
   
  export const PopUpContext = createContext({ 
@@ -20,6 +21,27 @@ import React, { createContext, useState, useEffect } from 'react';
         </PopUpContext.Provider> 
     ); 
  };
+
+
+ const storeData = async (value) => {
+    try {
+      const jsonValue = JSON.stringify(value)
+      await AsyncStorage.setItem('@storage_Key', jsonValue)
+    } catch (e) {
+      // saving error
+    }
+  }
+
+  // const getData = async () => {
+  //   try {
+  //     const jsonValue = await AsyncStorage.getItem('@storage_Key')
+  //     return jsonValue != null ? JSON.parse(jsonValue) : [];
+  //   } catch(e) {
+  //     // error reading value
+  //   }
+  // }
+  
+  
   
  export const PatientInfoContext = createContext({ 
     currentPatientInfo: null, 
@@ -40,8 +62,8 @@ import React, { createContext, useState, useEffect } from 'react';
 	}; 
   
     useEffect(() => { 
-  
-    }, []); 
+        storeData(currentPatientInfo);
+    }, [currentPatientInfo]); 
   
     return (
         <PatientInfoContext.Provider value={value} > 

@@ -39,7 +39,6 @@ const EditHistoryInfo = ({navigation, route}) => {
 		if(!diagnosis || !prescriptions || !bill) {
 			return Alert.alert("", "Cannot submit empty fields");
 		}
-		console.log('info: ', JSON.stringify(index), key)
 		setCurrentPatientInfo(
 			currentPatientInfo.map((patient, i) => patient = i === index
 				? {
@@ -67,7 +66,6 @@ const EditHistoryInfo = ({navigation, route}) => {
 	}
 	
 	useEffect (() => {
-		console.log('aaa: ', currentPatientInfo)
 	},[currentPatientInfo])
 	
 	return (
